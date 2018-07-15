@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('chatbott App', () => {
+describe('directivesdeepdive App', () => {
   let page: AppPage;
 
   beforeEach(() => {

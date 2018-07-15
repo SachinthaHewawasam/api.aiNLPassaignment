@@ -1,19 +1,32 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ChatService } from '../chat.service';
-import { ChatDialogComponent } from './chat-dialog/chat-dialog.component';
+import { Component, OnInit } from '@angular/core';
+import { ChatService, Message } from '../chat.service';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/scan';
 
-
-@NgModule({
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  declarations: [
-    ChatDialogComponent
-  ],
-  exports: [ ChatDialogComponent ], // <-- export here
-  providers: [ChatService]
+Observable
+@Component({
+  selector: 'chat-dialog',
+  templateUrl: './chat-dialog.component.html',
+  styleUrls: ['./chat-dialog.component.css']
 })
-export class ChatModule { }
+export class ChatDialogComponent implements OnInit {
+
+  messages: Observable<Message[]>;
+  formValue: string;
+
+
+  constructor(private chat: ChatService) { }
+
+  ngOnInit() {
+    // appends to array after each new message is added to feedSource
+    this.messages = this.chat.conversation.asObservable()
+        .scan((acc, val) => acc.concat(val) );
+  }
+
+  sendMessage() {
+    this.chat.converse(this.formValue);
+    this.formValue = '';
+  }
+
+
+}
